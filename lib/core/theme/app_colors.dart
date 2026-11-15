@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 
+/// Colors used across the FixMyCity screens.
 class AppColors {
   AppColors._();
 
-  // الألوان الأساسية
-  static const Color primary = Color(0xFF087F78);      // الأخضر المزرق الأساسي
-  static const Color background = Color(0xFFF5F6F8);   // خلفية الشاشات الرمادية الفاتحة
-  static const Color surface = Colors.white;           // خلفية الحقول والبطاقات
-
-  // ألوان النصوص
-  static const Color textPrimary = Color(0xFF1A202C);  // العناوين الداكنة
-  static const Color textSecondary = Color(0xFF718096);// النصوص الوصفية
-  static const Color textHint = Color(0xFFA0AEC0);     // النصوص التوضيحية داخل الحقول
-  static const Color textMuted = Color(0xFF5A6B6C);    // نص زر الرجوع
-
-  // ألوان الحدود والحالات
-  static const Color border = Color(0xFFE2E8F0);
-  static const Color inactiveStep = Color(0xFFD9E2EC);
-  static const Color error = Colors.redAccent;
+  static const primary = Color(0xFF075E63);
+  static const primaryLight = Color(0xFFE8F2F2);
+  static const background = Color(0xFFF3F6F7);
+  static const surface = Colors.white;
+  static const navy = Color(0xFF13374D);
+  static const text = Color(0xFF526773);
+  static const hint = Color(0xFF94A3AB);
+  static const border = Color(0xFFD9E3E7);
+  static const success = Color(0xFF247348);
+  static const warning = Color(0xFF926313);
+  static const error = Color(0xFFB43F3B);
 }
