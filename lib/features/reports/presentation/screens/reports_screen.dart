@@ -14,17 +14,18 @@ class ReportsScreen extends StatefulWidget {
 class _ReportsScreenState extends State<ReportsScreen> {
   String _selectedStatus = 'الكل';
   String _selectedDepartment = 'كل الجهات';
+  String _dataFile = 'large_reports.json';
   final List<String> _statuses = const ['الكل', 'قيد المراجعة', 'قيد التنفيذ', 'تم الحل', 'مرفوض'];
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('بلاغاتي')),
     body: FutureBuilder<List<Map<String, dynamic>>>(
-      future: TestDataLoader.loadList('large_reports.json'),
+      future: TestDataLoader.loadList(_dataFile),
       builder: (context, snapshot) {
         if (snapshot.hasError) return const Center(child: Text('تعذّر تحميل البلاغات.'));
         if (!snapshot.hasData) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
-        final allReports = [...LocalReportStore.reports, ...snapshot.data!];
+        final allReports = _dataFile == 'empty_reports.json' ? snapshot.data! : [...LocalReportStore.reports, ...snapshot.data!];
         final departments = allReports.map((r) => r['department'].toString()).toSet().toList();
         final reports = allReports.where((report) {
           final statusMatches = _selectedStatus == 'الكل' || report['status'] == _selectedStatus;
@@ -32,6 +33,19 @@ class _ReportsScreenState extends State<ReportsScreen> {
           return statusMatches && departmentMatches;
         }).toList();
         return Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+            child: DropdownButtonFormField<String>(
+              value: _dataFile,
+              decoration: const InputDecoration(labelText: 'بيانات تجربة الواجهة'),
+              items: const [
+                DropdownMenuItem(value: 'large_reports.json', child: Text('قائمة طويلة')),
+                DropdownMenuItem(value: 'reports.json', child: Text('بيانات عادية')),
+                DropdownMenuItem(value: 'empty_reports.json', child: Text('بدون بيانات')),
+              ],
+              onChanged: (value) => setState(() => _dataFile = value ?? 'large_reports.json'),
+            ),
+          ),
           SizedBox(
             height: 54,
             child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), children: _statuses.map((status) {
