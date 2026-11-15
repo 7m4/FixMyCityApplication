@@ -217,14 +217,11 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
       const SizedBox(height: 6),
       const Text('حرّك المؤشر على الخريطة التوضيحية لتحديد موقع المشكلة.', style: TextStyle(color: AppColors.text)),
       const SizedBox(height: 16),
-      GestureDetector(
+      LayoutBuilder(builder: (context, constraints) => GestureDetector(
         onPanUpdate: (details) {
-          final box = context.findRenderObject() as RenderBox?;
-          if (box == null) return;
-          final local = box.globalToLocal(details.globalPosition);
           setState(() {
-            _markerX = (local.dx / box.size.width).clamp(0.1, 0.9).toDouble();
-            _markerY = (local.dy / box.size.height).clamp(0.1, 0.9).toDouble();
+            _markerX = (details.localPosition.dx / constraints.maxWidth).clamp(0.1, 0.9).toDouble();
+            _markerY = (details.localPosition.dy / 340).clamp(0.1, 0.9).toDouble();
           });
         },
         child: Container(
@@ -241,7 +238,7 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
             ),
           ]),
         ),
-      ),
+      )),
       const SizedBox(height: 14),
       TextFormField(
         initialValue: _location,
