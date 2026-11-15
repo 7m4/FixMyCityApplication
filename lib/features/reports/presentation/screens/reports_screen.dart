@@ -43,7 +43,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 DropdownMenuItem(value: 'reports.json', child: Text('بيانات عادية')),
                 DropdownMenuItem(value: 'empty_reports.json', child: Text('بدون بيانات')),
               ],
-              onChanged: (value) => setState(() => _dataFile = value ?? 'large_reports.json'),
+              onChanged: (value) => setState(() {
+                _dataFile = value ?? 'large_reports.json';
+                _selectedDepartment = 'كل الجهات';
+                _selectedStatus = 'الكل';
+              }),
             ),
           ),
           SizedBox(
