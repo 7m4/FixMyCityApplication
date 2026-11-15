@@ -36,9 +36,9 @@ class HomeScreen extends StatelessWidget {
                 const Text('إجمالي البلاغات', style: TextStyle(color: Colors.white70)),
                 Text('${reports.length}', style: const TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold)),
                 Row(children: [
-                  _statChip('$active قيد المعالجة'.replaceFirst('$', ''), Colors.white),
+                  _statChip('$active قيد المعالجة', Colors.white),
                   const SizedBox(width: 8),
-                  _statChip('$completed مكتمل'.replaceFirst('$', ''), Colors.white),
+                  _statChip('$completed مكتمل', Colors.white),
                 ]),
               ]),
             ),
