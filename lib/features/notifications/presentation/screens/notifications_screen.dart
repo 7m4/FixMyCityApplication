@@ -55,6 +55,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   );
 
   void _showNotification(BuildContext context, Map<String, dynamic> item) {
+    setState(() => item['isRead'] = true);
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
