@@ -7,9 +7,8 @@ import '../../../reports/presentation/screens/report_details_screen.dart';
 import '../../../reports/presentation/widgets/report_card.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({required this.onOpenReports, required this.onCreateReport, super.key});
+  const HomeScreen({required this.onOpenReports, super.key});
   final VoidCallback onOpenReports;
-  final VoidCallback onCreateReport;
 
   @override
   Widget build(BuildContext context) => Scaffold(
