@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/testing/test_data_loader.dart';
+import '../../../../core/testing/local_report_store.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../widgets/report_card.dart';
@@ -23,8 +24,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
       builder: (context, snapshot) {
         if (snapshot.hasError) return const Center(child: Text('تعذّر تحميل البلاغات.'));
         if (!snapshot.hasData) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
-        final departments = snapshot.data!.map((r) => r['department'].toString()).toSet().toList();
-        final reports = snapshot.data!.where((report) {
+        final allReports = [...LocalReportStore.reports, ...snapshot.data!];
+        final departments = allReports.map((r) => r['department'].toString()).toSet().toList();
+        final reports = allReports.where((report) {
           final statusMatches = _selectedStatus == 'الكل' || report['status'] == _selectedStatus;
           final departmentMatches = _selectedDepartment == 'كل الجهات' || report['department'] == _selectedDepartment;
           return statusMatches && departmentMatches;
