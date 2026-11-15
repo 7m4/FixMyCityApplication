@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/testing/test_data_loader.dart';
+import '../../../../core/testing/local_report_store.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../reports/presentation/screens/report_details_screen.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasError) return const Center(child: Text('تعذّر تحميل بيانات التجربة.'));
         if (!snapshot.hasData) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
-        final reports = snapshot.data!;
+        final reports = [...LocalReportStore.reports, ...snapshot.data!];
         final active = reports.where((r) => r['status'] != 'تم الحل').length;
         final completed = reports.length - active;
         return ListView(
@@ -29,6 +30,7 @@ class HomeScreen extends StatelessWidget {
             const Text('إليك ملخص بلاغاتك الأخيرة.', style: TextStyle(color: AppColors.text)),
             const SizedBox(height: 18),
             AppCard(
+              backgroundColor: AppColors.primary,
               padding: const EdgeInsets.all(18),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Text('إجمالي البلاغات', style: TextStyle(color: Colors.white70)),
