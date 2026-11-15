@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
-import 'features/demo/demo_screens.dart';
+import 'features/splash/presentation/screens/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const FixMyCityApp());
 }
 
@@ -12,10 +13,10 @@ class FixMyCityApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fix My City',
+      title: 'FixMyCity',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const DemoRootScreen(),
+      home: const SplashScreen(),
     );
   }
 }
