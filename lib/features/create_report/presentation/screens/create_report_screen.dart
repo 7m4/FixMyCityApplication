@@ -7,7 +7,6 @@ import '../../../../core/testing/local_report_store.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
-import '../../../reports/presentation/screens/report_details_screen.dart';
 import 'report_success_screen.dart';
 
 class CreateReportScreen extends StatefulWidget {
@@ -224,8 +223,8 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
           if (box == null) return;
           final local = box.globalToLocal(details.globalPosition);
           setState(() {
-            _markerX = (local.dx / box.size.width).clamp(0.1, 0.9);
-            _markerY = (local.dy / box.size.height).clamp(0.1, 0.9);
+            _markerX = (local.dx / box.size.width).clamp(0.1, 0.9).toDouble();
+            _markerY = (local.dy / box.size.height).clamp(0.1, 0.9).toDouble();
           });
         },
         child: Container(
