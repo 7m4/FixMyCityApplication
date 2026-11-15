@@ -29,7 +29,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    final page = _pages[_currentPage];
     return Directionality(textDirection: TextDirection.rtl, child: Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(child: Padding(padding: const EdgeInsets.all(24), child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
