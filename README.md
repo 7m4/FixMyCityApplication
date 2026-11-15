@@ -1,19 +1,46 @@
 # FixMyCity Application
 
-**FixMyCity** is a Flutter application that helps citizens report city issues and follow their progress. The interface follows the official Figma design and supports Arabic right-to-left (RTL) layouts.
+تطبيق Flutter تجريبي يساعد المواطن على إرسال بلاغات المشكلات البلدية ومتابعة حالتها. الواجهات باللغة العربية وبدعم اتجاه RTL، والتنظيم مبني على تقسيم المشروع حسب الـ Features.
 
-## Project structure
+## تجربة التطبيق
 
-The app uses a simple **feature-first** structure. Each feature keeps its screens and the widgets used only by those screens together.
+بعد تشغيل التطبيق ستظهر شاشة البداية ثم شاشة التعريف بالتطبيق وبوابة المواطن.
+
+بيانات الدخول التجريبية مملوءة مسبقاً في شاشة تسجيل الدخول:
+- رقم الهوية: `1234567890`
+- كلمة المرور: `Test@1234`
+
+يمكنك تجربة:
+- لوحة المواطن والإحصائيات والبلاغات الأخيرة.
+- قائمة البلاغات الطويلة، والتصفية حسب الحالة والقسم.
+- تفاصيل البلاغ وسجل حالته.
+- الإشعارات وفتح تفاصيل كل إشعار.
+- إنشاء بلاغ جديد من اختيار القسم والفئة إلى تحديد الموقع والوصف وإرفاق صورة ومراجعة البلاغ.
+- عرض رقم التتبع ونسخه بعد إرسال البلاغ.
+
+> هذه نسخة محلية لا تتصل بخادم أو قاعدة بيانات. تسجيل الدخول وإنشاء الحساب وإرسال البلاغات عمليات محاكاة لأغراض اختبار الواجهات. البلاغات التي تنشئها تبقى في الذاكرة خلال جلسة التطبيق فقط. الخريطة توضيحية ولا تستخدم GPS، كما أن بوابة الموظف غير مفعّلة في هذه النسخة.
+
+## تشغيل المشروع
+
+تأكد من تثبيت Flutter وDart، ثم نفّذ الأوامر من مجلد المشروع:
+
+```bash
+flutter pub get
+flutter analyze
+flutter test
+flutter run
+```
+
+يستخدم المشروع `image_picker` لاختيار صورة من المعرض أو التقاط صورة بالكاميرا. أُضيفت أوصاف الأذونات لمنصتي Android وiOS.
+
+## تنظيم المجلدات
 
 ```text
 lib/
 ├── core/
-│   ├── theme/                 # App colors, text styles and theme
-│   ├── utils/                 # Small reusable helper functions
-│   ├── testing/               # Helpers for loading local test JSON
-│   └── widgets/               # Widgets shared by more than one feature
-│
+│   ├── testing/               # تحميل بيانات JSON وسجل البلاغات المحلي
+│   ├── theme/                 # ألوان وثيم التطبيق
+│   └── widgets/               # Widgets مشتركة بين أكثر من Feature
 ├── features/
 │   ├── splash/
 │   ├── onboarding/
@@ -22,64 +49,33 @@ lib/
 │   ├── reports/
 │   ├── create_report/
 │   └── notifications/
-│
 └── main.dart
 
-test_data/                     # Local JSON fixtures; kept outside lib/
-├── reports.json
-├── large_reports.json
-├── empty_reports.json
-├── notifications.json
-└── categories.json
+test_data/                     # بيانات JSON خارج lib لاختبار الواجهات
+test/                          # اختبارات Flutter
 ```
 
-A feature can grow into this structure when it needs it:
+### أين أضع الملف الجديد؟
 
-```text
-feature_name/
-├── data/                      # Models and data sources, when needed
-├── logic/                     # Cubit/Bloc, only when state becomes shared or complex
-└── presentation/
-    ├── screens/               # Full pages shown to the user
-    └── widgets/               # Widgets used only by this feature
-```
+- الشاشة الكاملة داخل `presentation/screens/` في الـ Feature المناسبة.
+- الـ Widget المستخدم داخل Feature واحدة داخل `presentation/widgets/`.
+- الـ Widget المشترك بين Features مختلفة داخل `core/widgets/`.
+- منطق الحالة البسيط يبقى داخل الشاشة عند الحاجة. نضيف Cubit فقط عندما تصبح الحالة مشتركة أو معقدة.
 
-Do not create empty folders or extra layers just to follow a pattern. Add them when the feature needs them.
+## بيانات اختبار الواجهات
 
-## Where should a file go?
+- `reports.json`: بيانات بلاغات عادية.
+- `large_reports.json`: 24 بلاغاً لاختبار القوائم والتمرير والنصوص.
+- `empty_reports.json`: لاختبار الحالة الفارغة.
+- `notifications.json`: إشعارات مقروءة وغير مقروءة.
+- `categories.json`: فئات البلاغات.
 
-- A complete page goes in that feature's `presentation/screens/` folder.
-- A widget used by multiple screens in the same feature goes in `presentation/widgets/`.
-- A widget used by different features goes in `core/widgets/`.
-- A small helper used across the app goes in `core/utils/`.
-- A Cubit belongs to the feature whose state it manages. Do not create a Cubit for every screen or button.
-- Keep JSON test data in `test_data/`; do not put sample records inside screen widgets.
+تُحمّل البيانات باستخدام `TestDataLoader`، ولا تقرأ الشاشات ملفات JSON مباشرة. بيانات JSON ليست Backend؛ عند توفر API سنستبدل مصدر البيانات دون إعادة كتابة واجهات العرض.
 
-## State management decision
+## ملاحظات قبل ربط Backend
 
-Keep simple, local interactions in Flutter's built-in `setState`. Use **Cubit** when multiple widgets or screens need to share state, when data loading has clear loading/success/error states, or when a multi-step flow needs to preserve values between pages. Use full Bloc only if the event-based approach is genuinely useful.
-
-This keeps the code approachable for Flutter beginners and avoids adding architecture before it is needed.
-
-## Local test data
-
-The JSON files in `test_data/` are sample data for checking layouts:
-
-- `reports.json`: a small list for normal display.
-- `large_reports.json`: many records and different description lengths for scrolling and text wrapping.
-- `empty_reports.json`: an empty list for the no-results state.
-- `notifications.json`: read and unread notifications.
-- `categories.json`: report categories and their departments.
-
-Load these files with `TestDataLoader` in `lib/core/testing/test_data_loader.dart`. Screens should receive data; they should not read JSON files directly.
-
-These fixtures are not real user data and are not a backend. Replace the data source with an API repository when the backend is ready.
-
-## Design and implementation rules
-
-1. Treat the Figma file as the source of truth for screens and visual styling.
-2. Keep widgets small and give classes and methods clear names.
-3. Prefer straightforward Flutter code over clever abstractions.
-4. Add short comments when the reason for a step is not obvious.
-5. Handle long lists, long text, empty data and loading/error states.
-6. Keep Arabic screens RTL; use LTR direction only for values such as email addresses or phone numbers when appropriate.
+- بيانات المستخدم الحالية تجريبية وليست آمنة أو مناسبة للإنتاج.
+- البلاغات الجديدة تحفظ في الذاكرة فقط وتختفي عند إغلاق التطبيق.
+- الصور المختارة لا تُرفع إلى أي خادم.
+- تحديد الموقع الحالي مجرد خريطة تفاعلية توضيحية.
+- الفيديو التعريفي في شاشة الترحيب مكان مخصص لفيديو سيضاف لاحقاً.
