@@ -19,7 +19,7 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      HomeScreen(onOpenReports: () => _selectTab(AppTab.reports), onCreateReport: _createReport),
+      HomeScreen(onOpenReports: () => _selectTab(AppTab.reports)),
       const ReportsScreen(),
       const NotificationsScreen(),
       const _ProfileScreen(),
