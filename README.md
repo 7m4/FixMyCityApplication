@@ -1,113 +1,85 @@
 # FixMyCity Application
 
-**FixMyCity** is a mobile application built with **Flutter** that empowers citizens to report and track city maintenance issues and civic problems efficiently. The project is designed with a clean, scalable **Feature-First Architecture** and full **Arabic (RTL)** support.
+**FixMyCity** is a Flutter application that helps citizens report city issues and follow their progress. The interface follows the official Figma design and supports Arabic right-to-left (RTL) layouts.
 
----
+## Project structure
 
-## Project Folder Structure
-
-The codebase inside `lib/` is organized using a **Feature-First** approach, separating shared application resources (`core/`) from independent business features (`features/`):
+The app uses a simple **feature-first** structure. Each feature keeps its screens and the widgets used only by those screens together.
 
 ```text
-fix_my_city_application/
-├── assets/                          # Static application assets
-│   ├── icons/                       # SVG and PNG icons
-│   └── images/                      # Logos, splash graphics, and illustrations
+lib/
+├── core/
+│   ├── theme/                 # App colors, text styles and theme
+│   ├── utils/                 # Small reusable helper functions
+│   ├── testing/               # Helpers for loading local test JSON
+│   └── widgets/               # Widgets shared by more than one feature
 │
-├── lib/
-│   ├── core/                        # Shared utilities, styles, and reusable components
-│   │   ├── constants/               # App-wide constants (API endpoints, asset paths, strings)
-│   │   ├── network/                 # HTTP client configuration and API interceptors
-│   │   ├── theme/                   # Centralized UI styling and branding
-│   │   │   ├── app_colors.dart      # Color palette definitions
-│   │   │   ├── app_text_styles.dart # Standardized typography and text styles
-│   │   │   └── app_theme.dart       # Global ThemeData configuration
-│   │   ├── utils/                   # Helper functions and input validation
-│   │   │   └── app_validators.dart  # Reusable form field validation rules
-│   │   └── widgets/                 # Reusable UI components across multiple features
-│   │       ├── custom_auth_header.dart
-│   │       ├── custom_primary_button.dart
-│   │       ├── custom_text_field.dart
-│   │       ├── step_progress_bar.dart
-│   │       └── widgets.dart         # Barrel file exporting all core widgets
-│   │
-│   ├── features/                    # Independent application modules
-│   │   ├── splash/                  # Initial loading and branding screen
-│   │   │   └── presentation/
-│   │   │       └── screens/
-│   │   │           └── splash_screen.dart
-│   │   │
-│   │   ├── auth/                    # Authentication & multi-step registration
-│   │   │   ├── data/                # Auth models and API repositories
-│   │   │   ├── logic/               # State management for login and registration steps
-│   │   │   └── presentation/
-│   │   │       ├── screens/         # Login and multi-step sign-up screens
-│   │   │       │   └── register_step1_screen.dart
-│   │   │       └── widgets/         # Widgets exclusive to authentication screens
-│   │   │
-│   │   └── create_report/           # Multi-step civic issue reporting workflow
-│   │       ├── data/                # Report request models and submission repositories
-│   │       ├── logic/               # Shared state across the 5-step report flow
-│   │       └── presentation/
-│   │           ├── screens/         # Step-by-step reporting screens
-│   │           └── widgets/         # Components specific to report creation
-│   │
-│   └── main.dart                    # Application entry point
+├── features/
+│   ├── splash/
+│   ├── onboarding/
+│   ├── authentication/
+│   ├── home/
+│   ├── reports/
+│   ├── create_report/
+│   └── notifications/
 │
-├── native_screen_splash.yaml        # Configuration for native Android & iOS splash screens
-└── pubspec.yaml                     # Project dependencies and asset declarations
+└── main.dart
+
+test_data/                     # Local JSON fixtures; kept outside lib/
+├── reports.json
+├── large_reports.json
+├── empty_reports.json
+├── notifications.json
+└── categories.json
 ```
 
----
+A feature can grow into this structure when it needs it:
 
-## Folder Responsibilities
+```text
+feature_name/
+├── data/                      # Models and data sources, when needed
+├── logic/                     # Cubit/Bloc, only when state becomes shared or complex
+└── presentation/
+    ├── screens/               # Full pages shown to the user
+    └── widgets/               # Widgets used only by this feature
+```
 
-* **`assets/`**: Stores all static media files, including vector icons (`.svg`) and raster images (`.png`).
-* **`lib/core/`**: Contains foundational code shared across the entire application so features remain decoupled and DRY (Don't Repeat Yourself).
-  * **`theme/`**: Centralizes all visual design tokens (`AppColors`, `AppTextStyles`, and `AppTheme`) to ensure UI consistency and easy rebranding.
-  * **`widgets/`**: Holds generic, reusable UI building blocks such as custom text fields, primary action buttons, and multi-step progress indicators.
-  * **`utils/`**: Provides standalone helper utilities, including form validation logic (`AppValidators`).
-* **`lib/features/`**: Houses self-contained business features. Each feature is divided into three layers:
-  * **`data/`**: Data models and repository classes responsible for communicating with backend APIs or local storage.
-  * **`logic/`**: State management controllers (e.g., Cubit/Bloc or Provider) handling business rules and temporary multi-step form data.
-  * **`presentation/`**: UI screens and feature-specific widgets.
+Do not create empty folders or extra layers just to follow a pattern. Add them when the feature needs them.
 
----
+## Where should a file go?
 
-## Getting Started
+- A complete page goes in that feature's `presentation/screens/` folder.
+- A widget used by multiple screens in the same feature goes in `presentation/widgets/`.
+- A widget used by different features goes in `core/widgets/`.
+- A small helper used across the app goes in `core/utils/`.
+- A Cubit belongs to the feature whose state it manages. Do not create a Cubit for every screen or button.
+- Keep JSON test data in `test_data/`; do not put sample records inside screen widgets.
 
-### Prerequisites
+## State management decision
 
-* [Flutter SDK](https://flutter.dev) (3.x or higher)
-* Dart SDK
-* Android Studio / VS Code with Flutter extensions
+Keep simple, local interactions in Flutter's built-in `setState`. Use **Cubit** when multiple widgets or screens need to share state, when data loading has clear loading/success/error states, or when a multi-step flow needs to preserve values between pages. Use full Bloc only if the event-based approach is genuinely useful.
 
-### Installation & Running
+This keeps the code approachable for Flutter beginners and avoids adding architecture before it is needed.
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com
-   cd fix_my_city_application
-   ```
+## Local test data
 
-2. **Install dependencies:**
-   ```bash
-   flutter pub get
-   ```
+The JSON files in `test_data/` are sample data for checking layouts:
 
-3. **Generate native splash screens (if modified):**
-   ```bash
-   dart run flutter_native_splash:create --path=native_screen_splash.yaml
-   ```
+- `reports.json`: a small list for normal display.
+- `large_reports.json`: many records and different description lengths for scrolling and text wrapping.
+- `empty_reports.json`: an empty list for the no-results state.
+- `notifications.json`: read and unread notifications.
+- `categories.json`: report categories and their departments.
 
-4. **Run the application:**
-   ```bash
-   flutter run
-   ```
+Load these files with `TestDataLoader` in `lib/core/testing/test_data_loader.dart`. Screens should receive data; they should not read JSON files directly.
 
----
+These fixtures are not real user data and are not a backend. Replace the data source with an API repository when the backend is ready.
 
-## Key Packages Used
+## Design and implementation rules
 
-* [`flutter_svg`](https://pub.dev) — Rendering crisp vector icons and illustrations.
-* [`flutter_native_splash`](https://pub.dev) — Customizing native Android and iOS launch screens.
+1. Treat the Figma file as the source of truth for screens and visual styling.
+2. Keep widgets small and give classes and methods clear names.
+3. Prefer straightforward Flutter code over clever abstractions.
+4. Add short comments when the reason for a step is not obvious.
+5. Handle long lists, long text, empty data and loading/error states.
+6. Keep Arabic screens RTL; use LTR direction only for values such as email addresses or phone numbers when appropriate.
