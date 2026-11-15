@@ -15,4 +15,11 @@ class AppColors {
   static const success = Color(0xFF247348);
   static const warning = Color(0xFF926313);
   static const error = Color(0xFFB43F3B);
+
+  // Compatibility names used by the earlier shared form widgets.
+  static const textPrimary = navy;
+  static const textSecondary = text;
+  static const textHint = hint;
+  static const textMuted = text;
+  static const inactiveStep = border;
 }
