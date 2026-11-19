@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   material_ui: ^1.1.0
   cupertino_icons: ^1.0.8
-  flutter_native_splash: ^2.4.8
   flutter_svg: ^2.3.4
   image_picker: ^1.1.2
 
@@ -26,3 +25,23 @@ flutter:
   assets:
     - assets/images/splash_logo.png
     - test_data/
+
+  fonts:
+      - family: Cairo
+        fonts:
+          - asset: assets/fonts/Cairo-ExtraLight.ttf
+            weight: 200
+          - asset: assets/fonts/Cairo-Light.ttf
+            weight: 300
+          - asset: assets/fonts/Cairo-Regular.ttf
+            weight: 400
+          - asset: assets/fonts/Cairo-Medium.ttf
+            weight: 500
+          - asset: assets/fonts/Cairo-SemiBold.ttf
+            weight: 600
+          - asset: assets/fonts/Cairo-Bold.ttf
+            weight: 700
+          - asset: assets/fonts/Cairo-ExtraBold.ttf
+            weight: 800
+          - asset: assets/fonts/Cairo-Black.ttf
+            weight: 900
