@@ -11,8 +11,9 @@ class AppTextStyles {
   );
 
   static const TextStyle heading = TextStyle(
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: FontWeight.bold,
+    fontFamily: 'Cairo',
     color: AppColors.textPrimary,
   );
 
