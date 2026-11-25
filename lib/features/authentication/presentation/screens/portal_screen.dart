@@ -3,6 +3,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../admin/presentation/screens/admin_login_screen.dart';
+import '../../../employee/presentation/screens/employee_shell.dart';
 import 'login_screen.dart';
 
 class PortalScreen extends StatefulWidget {
@@ -47,8 +48,9 @@ class _PortalScreenState extends State<PortalScreen> {
                 label: 'دخول',
                 onPressed: () {
                   if (_selectedPortal == 1) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('بوابة الموظف غير متاحة حالياً.')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const EmployeeShell()),
                     );
                   } else if (_selectedPortal == 2) {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminLoginScreen()));
