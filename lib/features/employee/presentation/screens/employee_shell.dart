@@ -48,57 +48,62 @@ class _EmployeeShellState extends State<EmployeeShell> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 393),
-            child: Scaffold(
-              backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: _tab == 0 && _selectedReport != null
-              ? ReportDetailsScreen(
-                  report: _selectedReport!,
-                  onBack: () {
+            child: SizedBox(
+              width: double.infinity,
+              child: Scaffold(
+                backgroundColor: AppColors.background,
+                body: SafeArea(
+                  child: _tab == 0 && _selectedReport != null
+                      ? ReportDetailsScreen(
+                          report: _selectedReport!,
+                          onBack: () {
+                            setState(() {
+                              _selectedReport = null;
+                            });
+                          },
+                        )
+                      : IndexedStack(
+                          index: _tab,
+                          children: pages,
+                        ),
+                ),
+                bottomNavigationBar: NavigationBar(
+                  height: 68,
+                  labelBehavior:
+                      NavigationDestinationLabelBehavior.alwaysShow,
+                  backgroundColor: AppColors.surface,
+                  indicatorColor: AppColors.primaryLight,
+                  selectedIndex: _tab,
+                  onDestinationSelected: (index) {
                     setState(() {
+                      _tab = index;
                       _selectedReport = null;
                     });
                   },
-                )
-              : IndexedStack(
-                  index: _tab,
-                  children: pages,
+                  destinations: const [
+                    NavigationDestination(
+                      icon: Icon(Icons.home_outlined),
+                      selectedIcon: Icon(Icons.home),
+                      label: 'الرئيسية',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(Icons.map_outlined),
+                      selectedIcon: Icon(Icons.map),
+                      label: 'الخريطة',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(Icons.copy_outlined),
+                      selectedIcon: Icon(Icons.copy),
+                      label: 'المكررة',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(Icons.person_outline),
+                      selectedIcon: Icon(Icons.person),
+                      label: 'حسابي',
+                    ),
+                  ],
                 ),
-        ),
-        bottomNavigationBar: NavigationBar(
-          height: 68,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          backgroundColor: AppColors.surface,
-          indicatorColor: AppColors.primaryLight,
-          selectedIndex: _tab,
-          onDestinationSelected: (index) {
-            setState(() {
-              _tab = index;
-              _selectedReport = null;
-            });
-          },
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'الرئيسية',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.map_outlined),
-              selectedIcon: Icon(Icons.map),
-              label: 'الخريطة',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.copy_outlined),
-              selectedIcon: Icon(Icons.copy),
-              label: 'المكررة',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: 'حسابي',
-            ),
-          ],
+              ),
             ),
           ),
         ),
