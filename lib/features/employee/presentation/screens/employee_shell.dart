@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import 'manager_dashboard_screen.dart';
 
-/// Navigation container for the employee portal.
-/// Each tab will be connected to its Figma screen in the following phases.
 class EmployeeShell extends StatefulWidget {
   const EmployeeShell({super.key});
 
@@ -13,31 +12,27 @@ class EmployeeShell extends StatefulWidget {
 class _EmployeeShellState extends State<EmployeeShell> {
   int _tab = 0;
 
-  static const _tabs = [
-    _EmployeeTabPlaceholder(
-      title: 'الرئيسية',
-      message: 'سيتم تنفيذ لوحة تحكم مدير القسم في المرحلة التالية.',
-      icon: Icons.home_outlined,
-    ),
-    _EmployeeTabPlaceholder(
-      title: 'الخريطة',
-      message: 'ستظهر خريطة بلاغات القسم هنا.',
-      icon: Icons.map_outlined,
-    ),
-    _EmployeeTabPlaceholder(
-      title: 'المكررة',
-      message: 'ستظهر البلاغات المتكررة هنا.',
-      icon: Icons.copy_outlined,
-    ),
-    _EmployeeTabPlaceholder(
-      title: 'حسابي',
-      message: 'ستظهر معلومات حساب الموظف هنا.',
-      icon: Icons.person_outline,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      const ManagerDashboardScreen(),
+      const _EmployeeTabPlaceholder(
+        title: 'الخريطة',
+        message: 'ستظهر خريطة بلاغات القسم هنا.',
+        icon: Icons.map_outlined,
+      ),
+      const _EmployeeTabPlaceholder(
+        title: 'المكررة',
+        message: 'ستظهر البلاغات المتكررة هنا.',
+        icon: Icons.copy_outlined,
+      ),
+      const _EmployeeTabPlaceholder(
+        title: 'حسابي',
+        message: 'ستظهر معلومات حساب الموظف هنا.',
+        icon: Icons.person_outline,
+      ),
+    ];
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -45,7 +40,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
         body: SafeArea(
           child: IndexedStack(
             index: _tab,
-            children: _tabs,
+            children: pages,
           ),
         ),
         bottomNavigationBar: NavigationBar(
@@ -54,7 +49,9 @@ class _EmployeeShellState extends State<EmployeeShell> {
           backgroundColor: AppColors.surface,
           indicatorColor: AppColors.primaryLight,
           selectedIndex: _tab,
-          onDestinationSelected: (index) => setState(() => _tab = index),
+          onDestinationSelected: (index) {
+            setState(() => _tab = index);
+          },
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
@@ -102,7 +99,11 @@ class _EmployeeTabPlaceholder extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 48, color: AppColors.primary),
+            Icon(
+              icon,
+              size: 48,
+              color: AppColors.primary,
+            ),
             const SizedBox(height: 16),
             Text(
               title,
@@ -116,7 +117,9 @@ class _EmployeeTabPlaceholder extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.text),
+              style: const TextStyle(
+                color: AppColors.text,
+              ),
             ),
           ],
         ),
