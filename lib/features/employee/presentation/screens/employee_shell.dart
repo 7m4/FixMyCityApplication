@@ -43,8 +43,13 @@ class _EmployeeShellState extends State<EmployeeShell> {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
+      child: ColoredBox(
+        color: AppColors.background,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 393),
+            child: Scaffold(
+              backgroundColor: AppColors.background,
         body: SafeArea(
           child: _tab == 0 && _selectedReport != null
               ? ReportDetailsScreen(
@@ -94,6 +99,8 @@ class _EmployeeShellState extends State<EmployeeShell> {
               label: 'حسابي',
             ),
           ],
+            ),
+          ),
         ),
       ),
     );
