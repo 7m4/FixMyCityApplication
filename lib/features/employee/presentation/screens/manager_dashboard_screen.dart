@@ -61,7 +61,12 @@ class SampleReport {
 }
 
 class ManagerDashboardScreen extends StatefulWidget {
-  const ManagerDashboardScreen({super.key});
+  const ManagerDashboardScreen({
+    super.key,
+    this.onReportTap,
+  });
+
+  final ValueChanged<SampleReport>? onReportTap;
 
   @override
   State<ManagerDashboardScreen> createState() =>
@@ -357,7 +362,10 @@ class _ManagerDashboardScreenState
   }
 
   Widget _buildReportCard(SampleReport report) {
-    return Container(
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: () => widget.onReportTap?.call(report),
+      child: Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -405,6 +413,7 @@ class _ManagerDashboardScreenState
           const SizedBox(width: 10),
           _buildStatusChip(report.status),
         ],
+      ),
       ),
     );
   }
