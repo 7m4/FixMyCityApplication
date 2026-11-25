@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'manager_dashboard_screen.dart';
+import 'report_details_screen.dart';
 
 class EmployeeShell extends StatefulWidget {
   const EmployeeShell({super.key});
@@ -11,11 +12,18 @@ class EmployeeShell extends StatefulWidget {
 
 class _EmployeeShellState extends State<EmployeeShell> {
   int _tab = 0;
+  SampleReport? _selectedReport;
 
   @override
   Widget build(BuildContext context) {
     final pages = [
-      const ManagerDashboardScreen(),
+      ManagerDashboardScreen(
+        onReportTap: (report) {
+          setState(() {
+            _selectedReport = report;
+          });
+        },
+      ),
       const _EmployeeTabPlaceholder(
         title: 'الخريطة',
         message: 'ستظهر خريطة بلاغات القسم هنا.',
@@ -38,10 +46,19 @@ class _EmployeeShellState extends State<EmployeeShell> {
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
-          child: IndexedStack(
-            index: _tab,
-            children: pages,
-          ),
+          child: _tab == 0 && _selectedReport != null
+              ? ReportDetailsScreen(
+                  report: _selectedReport!,
+                  onBack: () {
+                    setState(() {
+                      _selectedReport = null;
+                    });
+                  },
+                )
+              : IndexedStack(
+                  index: _tab,
+                  children: pages,
+                ),
         ),
         bottomNavigationBar: NavigationBar(
           height: 68,
@@ -50,7 +67,10 @@ class _EmployeeShellState extends State<EmployeeShell> {
           indicatorColor: AppColors.primaryLight,
           selectedIndex: _tab,
           onDestinationSelected: (index) {
-            setState(() => _tab = index);
+            setState(() {
+              _tab = index;
+              _selectedReport = null;
+            });
           },
           destinations: const [
             NavigationDestination(
@@ -99,11 +119,7 @@ class _EmployeeTabPlaceholder extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 48,
-              color: AppColors.primary,
-            ),
+            Icon(icon, size: 48, color: AppColors.primary),
             const SizedBox(height: 16),
             Text(
               title,
@@ -117,9 +133,7 @@ class _EmployeeTabPlaceholder extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.text,
-              ),
+              style: const TextStyle(color: AppColors.text),
             ),
           ],
         ),
