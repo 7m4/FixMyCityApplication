@@ -102,7 +102,7 @@ class _DepartmentReportsMapScreenState
                       ],
                       onChanged: (value) => setState(() {
                         _statusFilter = value!;
-                        if (!visible.any((r) => r.id == _selectedReportId)) {
+                        if (!_visibleReports.any((r) => r.id == _selectedReportId)) {
                           _selectedReportId = _visibleReports.isEmpty
                               ? null
                               : _visibleReports.first.id;
