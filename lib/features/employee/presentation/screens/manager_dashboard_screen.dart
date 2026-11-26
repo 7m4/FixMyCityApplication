@@ -12,7 +12,7 @@ class DashboardSampleData {
   static const inProgressReports = 5;
   static const pendingReports = 3;
 
-  static const reports = [
+  static final reports = [
     SampleReport(
       id: 'FMC-2026-1042',
       title: 'حفرة في الطريق الرئيسي',
