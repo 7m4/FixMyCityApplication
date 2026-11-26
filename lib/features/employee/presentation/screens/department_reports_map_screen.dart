@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
-import 'manager_dashboard_screen.dart';
+import '../../data/employee_reports_data.dart';
 
 class DepartmentReportsMapScreen extends StatefulWidget {
   const DepartmentReportsMapScreen({
@@ -21,45 +21,25 @@ class _DepartmentReportsMapScreenState
     extends State<DepartmentReportsMapScreen> {
   String _statusFilter = 'جميع الحالات';
   String _areaFilter = 'كل المناطق';
-  int _selectedMarker = 0;
+  String? _selectedReportId;
   double _zoom = 1;
 
-  static const _markers = <_MapMarker>[
-    _MapMarker(.21, .20, 'تم الحل', 'شارع الملك عبدالله'),
-    _MapMarker(.64, .20, 'قيد العمل', 'شارع الملك عبدالله'),
-    _MapMarker(.83, .20, 'قيد العمل', 'منطقة الوسط'),
-    _MapMarker(.48, .39, 'بانتظار الموافقة', 'شارع الملك عبدالله'),
-    _MapMarker(.53, .53, 'تم الحل', 'منطقة الوسط'),
-    _MapMarker(.20, .57, 'قيد العمل', 'حي الزهور'),
-    _MapMarker(.86, .57, 'بانتظار الموافقة', 'شارع الجيش'),
-    _MapMarker(.34, .76, 'تم الحل', 'حي الزهور'),
-    _MapMarker(.77, .76, 'بانتظار الموافقة', 'شارع الجيش'),
-    _MapMarker(.16, .88, 'قيد العمل', 'منطقة الوسط'),
-    _MapMarker(.48, .91, 'قيد العمل', 'شارع الملك عبدالله'),
-    _MapMarker(.84, .90, 'قيد العمل', 'حي الزهور'),
-  ];
-
-  List<int> get _visibleMarkerIndexes => List.generate(_markers.length, (i) => i)
-      .where((i) {
-        final marker = _markers[i];
+  List<SampleReport> get _visibleReports => widget.reports.where((report) {
         final statusMatches = _statusFilter == 'جميع الحالات' ||
-            marker.status == _statusFilter;
+            report.status == _statusFilter;
         final areaMatches =
-            _areaFilter == 'كل المناطق' || marker.area == _areaFilter;
+            _areaFilter == 'كل المناطق' || report.area == _areaFilter;
         return statusMatches && areaMatches;
       }).toList();
 
   SampleReport get _selectedReport {
     if (widget.reports.isEmpty) {
-      return SampleReport(
-        id: 'FMC-2026-1042',
-        title: 'حفرة في الطريق الرئيسي',
-        location: 'شارع الملك عبدالله',
-        date: '09/11/2026',
-        status: 'بانتظار الموافقة',
-      );
+      throw StateError('لا توجد بلاغات لعرضها على الخريطة');
     }
-    return widget.reports[_selectedMarker % widget.reports.length];
+    return widget.reports.firstWhere(
+      (report) => report.id == _selectedReportId,
+      orElse: () => widget.reports.first,
+    );
   }
 
   Color _statusColor(String status) {
@@ -75,11 +55,11 @@ class _DepartmentReportsMapScreenState
 
   @override
   Widget build(BuildContext context) {
-    final visible = _visibleMarkerIndexes;
-    final completed = _markers.where((m) => m.status == 'تم الحل').length;
-    final inProgress = _markers.where((m) => m.status == 'قيد العمل').length;
-    final pending =
-        _markers.where((m) => m.status == 'بانتظار الموافقة').length;
+    final visible = _visibleReports;
+    final completed = widget.reports.where((r) => r.status == 'تم الحل').length;
+    final inProgress = widget.reports.where((r) => r.status == 'قيد العمل').length;
+    final pending = widget.reports.where((r) => r.status == 'بانتظار الموافقة').length;
+    final rejected = widget.reports.where((r) => r.status == 'مرفوض').length;
 
     return ListView(
       padding: EdgeInsets.zero,
@@ -116,13 +96,14 @@ class _DepartmentReportsMapScreenState
                         'بانتظار الموافقة',
                         'قيد العمل',
                         'تم الحل',
+                        'مرفوض',
                       ],
                       onChanged: (value) => setState(() {
                         _statusFilter = value!;
-                        if (!visible.contains(_selectedMarker)) {
-                          _selectedMarker = _visibleMarkerIndexes.isEmpty
-                              ? 0
-                              : _visibleMarkerIndexes.first;
+                        if (!visible.any((r) => r.id == _selectedReportId)) {
+                          _selectedReportId = _visibleReports.isEmpty
+                              ? null
+                              : _visibleReports.first.id;
                         }
                       }),
                     ),
@@ -160,6 +141,8 @@ class _DepartmentReportsMapScreenState
                   Expanded(child: _summaryPill(inProgress, 'قيد العمل', AppColors.primary)),
                   const SizedBox(width: 6),
                   Expanded(child: _summaryPill(pending, 'بانتظار الموافقة', AppColors.warning)),
+                  const SizedBox(width: 6),
+                  Expanded(child: _summaryPill(rejected, 'مرفوض', AppColors.error)),
                 ],
               ),
               const SizedBox(height: 12),
@@ -237,7 +220,7 @@ class _DepartmentReportsMapScreenState
     );
   }
 
-  Widget _buildMap(List<int> visible) {
+  Widget _buildMap(List<SampleReport> visible) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
       child: SizedBox(
@@ -268,20 +251,19 @@ class _DepartmentReportsMapScreenState
                     ),
                   ),
                 ),
-                ...visible.map((index) {
-                  final marker = _markers[index];
-                  final selected = _selectedMarker == index;
+                ...visible.map((report) {
+                  final selected = _selectedReportId == report.id;
                   return Positioned(
-                    left: marker.x * constraints.maxWidth - (selected ? 14 : 11),
-                    top: marker.y * constraints.maxHeight - (selected ? 14 : 11),
+                    left: report.mapX * constraints.maxWidth - (selected ? 14 : 11),
+                    top: report.mapY * constraints.maxHeight - (selected ? 14 : 11),
                     child: GestureDetector(
-                      onTap: () => setState(() => _selectedMarker = index),
+                      onTap: () => setState(() => _selectedReportId = report.id),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 160),
                         width: selected ? 28 : 22,
                         height: selected ? 28 : 22,
                         decoration: BoxDecoration(
-                          color: _statusColor(marker.status),
+                          color: _statusColor(report.status),
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 3),
                           boxShadow: [
@@ -414,15 +396,6 @@ class _DepartmentReportsMapScreenState
       ),
     );
   }
-}
-
-class _MapMarker {
-  const _MapMarker(this.x, this.y, this.status, this.area);
-
-  final double x;
-  final double y;
-  final String status;
-  final String area;
 }
 
 class _IllustratedMapPainter extends CustomPainter {
