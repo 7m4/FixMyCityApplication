@@ -9,12 +9,14 @@ class ReportDetailsScreen extends StatelessWidget {
     required this.onBack,
     required this.onEditStatus,
     required this.onTransferReport,
+    required this.onReviewDuplicates,
   });
 
   final SampleReport report;
   final VoidCallback onBack;
   final VoidCallback onEditStatus;
   final VoidCallback onTransferReport;
+  final VoidCallback onReviewDuplicates;
 
   void _showComingSoon(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -199,10 +201,7 @@ class ReportDetailsScreen extends StatelessWidget {
               _actionButton(
                 context,
                 'مراجعة البلاغات المتكررة - 2',
-                onPressed: () => _showComingSoon(
-                  context,
-                  'شاشة مراجعة البلاغات المتكررة قيد التجهيز.',
-                ),
+                onPressed: onReviewDuplicates,
               ),
               const SizedBox(height: 16),
               TextButton(
