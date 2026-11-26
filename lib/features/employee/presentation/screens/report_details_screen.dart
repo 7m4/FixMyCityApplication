@@ -8,11 +8,13 @@ class ReportDetailsScreen extends StatelessWidget {
     required this.report,
     required this.onBack,
     required this.onEditStatus,
+    required this.onTransferReport,
   });
 
   final SampleReport report;
   final VoidCallback onBack;
   final VoidCallback onEditStatus;
+  final VoidCallback onTransferReport;
 
   void _showComingSoon(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -42,7 +44,7 @@ class ReportDetailsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               const Text(
-                'مديرية الأشغال العامة',
+                'بوابة مدير القسم',
                 textAlign: TextAlign.right,
                 style: TextStyle(color: AppColors.text),
               ),
@@ -152,12 +154,31 @@ class ReportDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    _detailRow('القسم المسؤول', 'مديرية الأشغال العامة'),
+                    _detailRow('القسم المسؤول', report.department),
                     const SizedBox(height: 10),
                     _detailRow(
                       'آخر تحديث',
                       '10 نوفمبر 2026 · 10:30 ص',
                     ),
+                    if (report.actionHistory.isNotEmpty) ...[
+                      const Divider(height: 24),
+                      _sectionTitle('سجل الإجراءات'),
+                      const SizedBox(height: 8),
+                      ...report.actionHistory.map(
+                        (entry) => Padding(
+                          padding: const EdgeInsets.only(bottom: 7),
+                          child: Text(
+                            entry,
+                            textAlign: TextAlign.right,
+                            style: const TextStyle(
+                              color: AppColors.text,
+                              fontSize: 12,
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -172,10 +193,7 @@ class ReportDetailsScreen extends StatelessWidget {
               _actionButton(
                 context,
                 'تحويل إلى قسم آخر',
-                onPressed: () => _showComingSoon(
-                  context,
-                  'شاشة تحويل البلاغ قيد التجهيز.',
-                ),
+                onPressed: onTransferReport,
               ),
               const SizedBox(height: 10),
               _actionButton(
