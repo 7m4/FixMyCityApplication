@@ -48,6 +48,8 @@ class _DepartmentReportsMapScreenState
         return AppColors.success;
       case 'بانتظار الموافقة':
         return AppColors.warning;
+      case 'مرفوض':
+        return AppColors.error;
       default:
         return AppColors.primary;
     }
@@ -121,10 +123,10 @@ class _DepartmentReportsMapScreenState
                       ],
                       onChanged: (value) => setState(() {
                         _areaFilter = value!;
-                        if (!visible.contains(_selectedMarker)) {
-                          _selectedMarker = _visibleMarkerIndexes.isEmpty
-                              ? 0
-                              : _visibleMarkerIndexes.first;
+                        if (!_visibleReports.any((r) => r.id == _selectedReportId)) {
+                          _selectedReportId = _visibleReports.isEmpty
+                              ? null
+                              : _visibleReports.first.id;
                         }
                       }),
                     ),
