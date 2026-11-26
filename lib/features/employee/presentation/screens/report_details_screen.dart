@@ -43,7 +43,7 @@ class ReportDetailsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
+              Text(
                 report.department,
                 textAlign: TextAlign.right,
                 style: TextStyle(color: AppColors.text),
