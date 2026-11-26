@@ -6,9 +6,11 @@ class DuplicateReportsScreen extends StatelessWidget {
   const DuplicateReportsScreen({
     super.key,
     required this.onReviewReport,
+    this.onBack,
   });
 
   final ValueChanged<SampleReport> onReviewReport;
+  final VoidCallback? onBack;
 
   static final _primaryReport = SampleReport(
     id: 'FMC-2026-1042',
@@ -69,7 +71,21 @@ class DuplicateReportsScreen extends StatelessWidget {
                 textAlign: TextAlign.right,
                 style: TextStyle(color: AppColors.text, fontSize: 13),
               ),
-              const SizedBox(height: 20),
+              if (onBack != null) ...[
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: onBack,
+                    icon: const Icon(Icons.arrow_forward, size: 17),
+                    label: const Text('العودة إلى تفاصيل البلاغ'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+              ],
+              const SizedBox(height: 16),
               _sectionHeading('البلاغ الأساسي', Icons.assignment_outlined),
               const SizedBox(height: 10),
               _primaryCard(),
