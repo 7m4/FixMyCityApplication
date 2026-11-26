@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'manager_dashboard_screen.dart';
 import 'report_details_screen.dart';
+import 'transfer_report_screen.dart';
 import 'update_report_status_screen.dart';
 
 class EmployeeShell extends StatefulWidget {
@@ -15,6 +16,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
   int _tab = 0;
   SampleReport? _selectedReport;
   bool _isUpdatingStatus = false;
+  bool _isTransferringReport = false;
 
   late final List<SampleReport> _reports = DashboardSampleData.reports
       .map(
@@ -24,6 +26,8 @@ class _EmployeeShellState extends State<EmployeeShell> {
           location: report.location,
           date: report.date,
           status: report.status,
+          department: report.department,
+          actionHistory: List<String>.from(report.actionHistory),
         ),
       )
       .toList();
@@ -37,6 +41,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
           setState(() {
             _selectedReport = report;
             _isUpdatingStatus = false;
+            _isTransferringReport = false;
           });
         },
       ),
@@ -76,6 +81,9 @@ class _EmployeeShellState extends State<EmployeeShell> {
                               onSave: (newStatus) {
                                 setState(() {
                                   _selectedReport!.status = newStatus;
+                                  _selectedReport!.actionHistory.add(
+                                    'تم تحديث الحالة إلى: $newStatus',
+                                  );
                                   _isUpdatingStatus = false;
                                 });
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -88,18 +96,58 @@ class _EmployeeShellState extends State<EmployeeShell> {
                                 setState(() => _isUpdatingStatus = false);
                               },
                             )
-                          : ReportDetailsScreen(
-                              report: _selectedReport!,
-                              onBack: () {
-                                setState(() {
-                                  _selectedReport = null;
-                                  _isUpdatingStatus = false;
-                                });
-                              },
-                              onEditStatus: () {
-                                setState(() => _isUpdatingStatus = true);
-                              },
-                            )
+                          : _isTransferringReport
+                              ? TransferReportScreen(
+                                  report: _selectedReport!,
+                                  onTransfer: (department, reason, notes) {
+                                    setState(() {
+                                      _selectedReport!.department = department;
+                                      _selectedReport!.actionHistory.add(
+                                        'تم تحويل البلاغ إلى $department. السبب: $reason',
+                                      );
+                                      if (notes.isNotEmpty) {
+                                        _selectedReport!.actionHistory.add(
+                                          'ملاحظات التحويل: $notes',
+                                        );
+                                      }
+                                      _isTransferringReport = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'تم تحويل البلاغ إلى $department بنجاح.',
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  onCancel: () {
+                                    setState(
+                                      () => _isTransferringReport = false,
+                                    );
+                                  },
+                                )
+                              : ReportDetailsScreen(
+                                  report: _selectedReport!,
+                                  onBack: () {
+                                    setState(() {
+                                      _selectedReport = null;
+                                      _isUpdatingStatus = false;
+                                      _isTransferringReport = false;
+                                    });
+                                  },
+                                  onEditStatus: () {
+                                    setState(() {
+                                      _isUpdatingStatus = true;
+                                      _isTransferringReport = false;
+                                    });
+                                  },
+                                  onTransferReport: () {
+                                    setState(() {
+                                      _isTransferringReport = true;
+                                      _isUpdatingStatus = false;
+                                    });
+                                  },
+                                )
                       : IndexedStack(
                           index: _tab,
                           children: pages,
@@ -117,6 +165,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
                       _tab = index;
                       _selectedReport = null;
                       _isUpdatingStatus = false;
+                      _isTransferringReport = false;
                     });
                   },
                   destinations: const [
