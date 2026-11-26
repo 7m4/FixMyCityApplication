@@ -91,7 +91,7 @@ class DuplicateReportsScreen extends StatelessWidget {
                       color: AppColors.primaryLight,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Text(
+                    child: Text(
                       '${duplicateReports.length} بلاغات',
                       style: TextStyle(
                         color: AppColors.primary,
