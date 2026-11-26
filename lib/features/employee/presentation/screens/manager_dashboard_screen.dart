@@ -168,7 +168,7 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             '${widget.reports.length}',
             style: TextStyle(
               color: Colors.white,
