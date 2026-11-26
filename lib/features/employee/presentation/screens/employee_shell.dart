@@ -95,7 +95,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
                           : _isUpdatingStatus
                               ? UpdateReportStatusScreen(
                               report: _selectedReport!,
-                              onSave: (newStatus) {
+                              onSave: (newStatus, notes, rejectionReason) {
                                 setState(() {
                                   _selectedReport!.status = newStatus;
                                   _selectedReport!.lastUpdated = 'تم التحديث الآن';
