@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
-import 'manager_dashboard_screen.dart';
+import '../../data/employee_reports_data.dart';
 
 class ReportDetailsScreen extends StatelessWidget {
   const ReportDetailsScreen({
@@ -111,8 +111,8 @@ class ReportDetailsScreen extends StatelessWidget {
                   children: [
                     _sectionTitle('وصف البلاغ'),
                     const SizedBox(height: 12),
-                    const Text(
-                      'وجود حفرة وتلف في طبقة الإسفلت تعيق حركة المركبات.',
+                    Text(
+                      report.description,
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color: AppColors.navy,
@@ -120,7 +120,7 @@ class ReportDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     const Divider(height: 24),
-                    _detailRow('نوع المشكلة', 'أضرار الطرق والحفر'),
+                    _detailRow('نوع المشكلة', report.category),
                   ],
                 ),
               ),
@@ -145,9 +145,9 @@ class ReportDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    _detailRow('الموقع', 'شارع الملك عبدالله، الزرقاء'),
+                    _detailRow('الموقع', report.location),
                     const SizedBox(height: 8),
-                    _detailRow('معلم قريب', 'بالقرب من دوار الجيش'),
+                    _detailRow('معلم قريب', report.landmark),
                   ],
                 ),
               ),
@@ -160,7 +160,7 @@ class ReportDetailsScreen extends StatelessWidget {
                     const SizedBox(height: 10),
                     _detailRow(
                       'آخر تحديث',
-                      '10 نوفمبر 2026 · 10:30 ص',
+                      report.lastUpdated.isEmpty ? report.date : report.lastUpdated,
                     ),
                     if (report.actionHistory.isNotEmpty) ...[
                       const Divider(height: 24),
