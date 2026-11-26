@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
-import 'manager_dashboard_screen.dart';
+import '../../data/employee_reports_data.dart';
 
 class UpdateReportStatusScreen extends StatefulWidget {
   const UpdateReportStatusScreen({
@@ -11,7 +11,7 @@ class UpdateReportStatusScreen extends StatefulWidget {
   });
 
   final SampleReport report;
-  final ValueChanged<String> onSave;
+  final void Function(String status, String notes, String rejectionReason) onSave;
   final VoidCallback onCancel;
 
   @override
@@ -61,7 +61,11 @@ class _UpdateReportStatusScreenState extends State<UpdateReportStatusScreen> {
       setState(() => _showRejectionError = true);
       return;
     }
-    widget.onSave(_selectedStatus);
+    widget.onSave(
+      _selectedStatus,
+      _notesController.text.trim(),
+      _requiresRejectionReason ? _rejectionController.text.trim() : '',
+    );
   }
 
   @override
