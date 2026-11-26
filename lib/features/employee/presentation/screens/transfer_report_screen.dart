@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
-import 'manager_dashboard_screen.dart';
+import '../../data/employee_reports_data.dart';
 
 class TransferReportScreen extends StatefulWidget {
   const TransferReportScreen({
