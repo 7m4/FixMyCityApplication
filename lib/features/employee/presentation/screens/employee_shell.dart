@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'manager_dashboard_screen.dart';
 import 'report_details_screen.dart';
+import 'update_report_status_screen.dart';
 
 class EmployeeShell extends StatefulWidget {
   const EmployeeShell({super.key});
@@ -13,14 +14,29 @@ class EmployeeShell extends StatefulWidget {
 class _EmployeeShellState extends State<EmployeeShell> {
   int _tab = 0;
   SampleReport? _selectedReport;
+  bool _isUpdatingStatus = false;
+
+  late final List<SampleReport> _reports = DashboardSampleData.reports
+      .map(
+        (report) => SampleReport(
+          id: report.id,
+          title: report.title,
+          location: report.location,
+          date: report.date,
+          status: report.status,
+        ),
+      )
+      .toList();
 
   @override
   Widget build(BuildContext context) {
     final pages = [
       ManagerDashboardScreen(
+        reports: _reports,
         onReportTap: (report) {
           setState(() {
             _selectedReport = report;
+            _isUpdatingStatus = false;
           });
         },
       ),
@@ -54,14 +70,36 @@ class _EmployeeShellState extends State<EmployeeShell> {
                 backgroundColor: AppColors.background,
                 body: SafeArea(
                   child: _tab == 0 && _selectedReport != null
-                      ? ReportDetailsScreen(
-                          report: _selectedReport!,
-                          onBack: () {
-                            setState(() {
-                              _selectedReport = null;
-                            });
-                          },
-                        )
+                      ? _isUpdatingStatus
+                          ? UpdateReportStatusScreen(
+                              report: _selectedReport!,
+                              onSave: (newStatus) {
+                                setState(() {
+                                  _selectedReport!.status = newStatus;
+                                  _isUpdatingStatus = false;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('تم تحديث حالة البلاغ بنجاح.'),
+                                  ),
+                                );
+                              },
+                              onCancel: () {
+                                setState(() => _isUpdatingStatus = false);
+                              },
+                            )
+                          : ReportDetailsScreen(
+                              report: _selectedReport!,
+                              onBack: () {
+                                setState(() {
+                                  _selectedReport = null;
+                                  _isUpdatingStatus = false;
+                                });
+                              },
+                              onEditStatus: () {
+                                setState(() => _isUpdatingStatus = true);
+                              },
+                            )
                       : IndexedStack(
                           index: _tab,
                           children: pages,
@@ -78,6 +116,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
                     setState(() {
                       _tab = index;
                       _selectedReport = null;
+                      _isUpdatingStatus = false;
                     });
                   },
                   destinations: const [
