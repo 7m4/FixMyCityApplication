@@ -1,67 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../data/employee_reports_data.dart';
 
 class DashboardSampleData {
   DashboardSampleData._();
 
   static const employeeName = 'أحمد';
   static const departmentName = 'مديرية الأشغال العامة';
-
-  static const totalReports = 12;
-  static const completedReports = 4;
-  static const inProgressReports = 5;
-  static const pendingReports = 3;
-
-  static final reports = [
-    SampleReport(
-      id: 'FMC-2026-1042',
-      title: 'حفرة في الطريق الرئيسي',
-      location: 'شارع الملك عبدالله',
-      date: '09/11/2026',
-      status: 'بانتظار الموافقة',
-    ),
-    SampleReport(
-      id: 'FMC-2026-1039',
-      title: 'تلف في الرصيف',
-      location: 'منطقة الوسط',
-      date: '08/11/2026',
-      status: 'قيد العمل',
-    ),
-    SampleReport(
-      id: 'FMC-2026-1035',
-      title: 'تضرر حاجز الطريق',
-      location: 'شارع الجيش',
-      date: '07/11/2026',
-      status: 'قيد العمل',
-    ),
-    SampleReport(
-      id: 'FMC-2026-1028',
-      title: 'هبوط في الطريق',
-      location: 'حي الزهور',
-      date: '05/11/2026',
-      status: 'تم الحل',
-    ),
-  ];
-}
-
-class SampleReport {
-  final String id;
-  final String title;
-  final String location;
-  final String date;
-  String status;
-  String department;
-  final List<String> actionHistory;
-
-  SampleReport({
-    required this.id,
-    required this.title,
-    required this.location,
-    required this.date,
-    required this.status,
-    this.department = 'مديرية الأشغال العامة',
-    List<String>? actionHistory,
-  }) : actionHistory = actionHistory ?? [];
 }
 
 class ManagerDashboardScreen extends StatefulWidget {
@@ -87,7 +32,11 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
     'بانتظار الموافقة',
     'قيد العمل',
     'المنتهية',
+    'مرفوض',
   ];
+
+  int _count(String status) =>
+      widget.reports.where((report) => report.status == status).length;
 
   List<SampleReport> get _filteredReports {
     if (_selectedFilter == 'الكل') {
@@ -196,6 +145,10 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
   }
 
   Widget _buildSummaryCard() {
+    final completed = _count('تم الحل');
+    final inProgress = _count('قيد العمل');
+    final pending = _count('بانتظار الموافقة');
+    final rejected = _count('مرفوض');
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -216,7 +169,7 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
           ),
           const SizedBox(height: 4),
           const Text(
-            '${DashboardSampleData.totalReports}',
+            '${widget.reports.length}',
             style: TextStyle(
               color: Colors.white,
               fontSize: 38,
@@ -228,23 +181,27 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
             children: [
               Expanded(
                 child: _buildSummaryItem(
-                  DashboardSampleData.completedReports,
+                  completed,
                   'منتهية',
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildSummaryItem(
-                  DashboardSampleData.inProgressReports,
+                  inProgress,
                   'قيد العمل',
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _buildSummaryItem(
-                  DashboardSampleData.pendingReports,
+                  pending,
                   'بانتظار الموافقة',
                 ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildSummaryItem(rejected, 'مرفوض'),
               ),
             ],
           ),
@@ -331,7 +288,7 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '${DashboardSampleData.totalReports} بلاغاً',
+          '${widget.reports.length} بلاغاً',
           style: const TextStyle(color: AppColors.hint, fontSize: 12),
         ),
         const Text(
