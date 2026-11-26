@@ -73,7 +73,7 @@ class ReportDetailsScreen extends StatelessWidget {
                     _statusChip(report.status),
                     const SizedBox(height: 12),
                     Text(
-                      'تاريخ البلاغ: ${report.date} · 10:08 ص',
+                      'تاريخ البلاغ: ${report.date}',
                       textAlign: TextAlign.right,
                       style: const TextStyle(color: AppColors.text),
                     ),
