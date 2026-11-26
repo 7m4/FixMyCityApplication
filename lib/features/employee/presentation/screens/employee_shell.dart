@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'manager_dashboard_screen.dart';
+import 'department_reports_map_screen.dart';
 import 'report_details_screen.dart';
 import 'transfer_report_screen.dart';
 import 'update_report_status_screen.dart';
@@ -45,10 +46,15 @@ class _EmployeeShellState extends State<EmployeeShell> {
           });
         },
       ),
-      const _EmployeeTabPlaceholder(
-        title: 'الخريطة',
-        message: 'ستظهر خريطة بلاغات القسم هنا.',
-        icon: Icons.map_outlined,
+      DepartmentReportsMapScreen(
+        reports: _reports,
+        onReportTap: (report) {
+          setState(() {
+            _selectedReport = report;
+            _isUpdatingStatus = false;
+            _isTransferringReport = false;
+          });
+        },
       ),
       const _EmployeeTabPlaceholder(
         title: 'المكررة',
@@ -74,7 +80,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
               child: Scaffold(
                 backgroundColor: AppColors.background,
                 body: SafeArea(
-                  child: _tab == 0 && _selectedReport != null
+                  child: _selectedReport != null
                       ? _isUpdatingStatus
                           ? UpdateReportStatusScreen(
                               report: _selectedReport!,
