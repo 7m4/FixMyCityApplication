@@ -42,6 +42,14 @@ class _DepartmentReportsMapScreenState
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.reports.isNotEmpty) {
+      _selectedReportId = widget.reports.first.id;
+    }
+  }
+
   Color _statusColor(String status) {
     switch (status) {
       case 'تم الحل':
