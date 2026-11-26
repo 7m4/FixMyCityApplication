@@ -50,6 +50,8 @@ class SampleReport {
   final String location;
   final String date;
   String status;
+  String department;
+  final List<String> actionHistory;
 
   SampleReport({
     required this.id,
@@ -57,7 +59,9 @@ class SampleReport {
     required this.location,
     required this.date,
     required this.status,
-  });
+    this.department = 'مديرية الأشغال العامة',
+    List<String>? actionHistory,
+  }) : actionHistory = actionHistory ?? [];
 }
 
 class ManagerDashboardScreen extends StatefulWidget {
