@@ -130,6 +130,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
                                   onTransfer: (department, reason, notes) {
                                     setState(() {
                                       _selectedReport!.department = department;
+                                      _selectedReport!.lastUpdated = 'تم التحويل الآن';
                                       _selectedReport!.actionHistory.add(
                                         'تم تحويل البلاغ إلى $department. السبب: $reason',
                                       );
