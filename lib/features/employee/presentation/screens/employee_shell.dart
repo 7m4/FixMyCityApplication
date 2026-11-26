@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../data/employee_reports_data.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'manager_dashboard_screen.dart';
 import 'department_reports_map_screen.dart';
@@ -21,19 +22,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
   bool _isTransferringReport = false;
   bool _isReviewingDuplicates = false;
 
-  late final List<SampleReport> _reports = DashboardSampleData.reports
-      .map(
-        (report) => SampleReport(
-          id: report.id,
-          title: report.title,
-          location: report.location,
-          date: report.date,
-          status: report.status,
-          department: report.department,
-          actionHistory: List<String>.from(report.actionHistory),
-        ),
-      )
-      .toList();
+  final List<SampleReport> _reports = EmployeeReportsData.reports;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +48,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
         },
       ),
       DuplicateReportsScreen(
+        reports: _reports,
         onReviewReport: (report) {
           setState(() {
             _selectedReport = report;
@@ -90,6 +80,8 @@ class _EmployeeShellState extends State<EmployeeShell> {
                   child: _selectedReport != null
                       ? _isReviewingDuplicates
                           ? DuplicateReportsScreen(
+                              reports: _reports,
+                              primaryReportId: _selectedReport!.id,
                               onBack: () {
                                 setState(() => _isReviewingDuplicates = false);
                               },
@@ -106,9 +98,20 @@ class _EmployeeShellState extends State<EmployeeShell> {
                               onSave: (newStatus) {
                                 setState(() {
                                   _selectedReport!.status = newStatus;
+                                  _selectedReport!.lastUpdated = 'تم التحديث الآن';
                                   _selectedReport!.actionHistory.add(
                                     'تم تحديث الحالة إلى: $newStatus',
                                   );
+                                  if (notes.isNotEmpty) {
+                                    _selectedReport!.actionHistory.add(
+                                      'ملاحظات المعالجة: $notes',
+                                    );
+                                  }
+                                  if (rejectionReason.isNotEmpty) {
+                                    _selectedReport!.actionHistory.add(
+                                      'سبب الرفض: $rejectionReason',
+                                    );
+                                  }
                                   _isUpdatingStatus = false;
                                 });
                                 ScaffoldMessenger.of(context).showSnackBar(
