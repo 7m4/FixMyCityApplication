@@ -19,6 +19,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
   SampleReport? _selectedReport;
   bool _isUpdatingStatus = false;
   bool _isTransferringReport = false;
+  bool _isReviewingDuplicates = false;
 
   late final List<SampleReport> _reports = DashboardSampleData.reports
       .map(
@@ -63,6 +64,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
             _selectedReport = report;
             _isUpdatingStatus = false;
             _isTransferringReport = false;
+            _isReviewingDuplicates = false;
           });
         },
       ),
@@ -86,8 +88,20 @@ class _EmployeeShellState extends State<EmployeeShell> {
                 backgroundColor: AppColors.background,
                 body: SafeArea(
                   child: _selectedReport != null
-                      ? _isUpdatingStatus
-                          ? UpdateReportStatusScreen(
+                      ? _isReviewingDuplicates
+                          ? DuplicateReportsScreen(
+                              onBack: () {
+                                setState(() => _isReviewingDuplicates = false);
+                              },
+                              onReviewReport: (report) {
+                                setState(() {
+                                  _selectedReport = report;
+                                  _isReviewingDuplicates = false;
+                                });
+                              },
+                            )
+                          : _isUpdatingStatus
+                              ? UpdateReportStatusScreen(
                               report: _selectedReport!,
                               onSave: (newStatus) {
                                 setState(() {
@@ -158,6 +172,13 @@ class _EmployeeShellState extends State<EmployeeShell> {
                                       _isUpdatingStatus = false;
                                     });
                                   },
+                                  onReviewDuplicates: () {
+                                    setState(() {
+                                      _isReviewingDuplicates = true;
+                                      _isUpdatingStatus = false;
+                                      _isTransferringReport = false;
+                                    });
+                                  },
                                 )
                       : IndexedStack(
                           index: _tab,
@@ -177,6 +198,7 @@ class _EmployeeShellState extends State<EmployeeShell> {
                       _selectedReport = null;
                       _isUpdatingStatus = false;
                       _isTransferringReport = false;
+                      _isReviewingDuplicates = false;
                     });
                   },
                   destinations: const [
