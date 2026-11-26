@@ -162,7 +162,7 @@ class _DepartmentReportsMapScreenState
                 style: const TextStyle(color: AppColors.hint, fontSize: 11),
               ),
               const SizedBox(height: 14),
-              _buildSelectedReport(),
+              visible.isEmpty ? _emptyFilteredState() : _buildSelectedReport(),
             ],
           ),
         ),
@@ -336,6 +336,22 @@ class _DepartmentReportsMapScreenState
           fontSize: 10,
           fontWeight: FontWeight.bold,
         ),
+      ),
+    );
+  }
+
+  Widget _emptyFilteredState() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: const Text(
+        'لا توجد بلاغات تطابق عوامل التصفية المحددة.',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: AppColors.text, fontSize: 13),
       ),
     );
   }
