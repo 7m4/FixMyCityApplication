@@ -287,16 +287,21 @@ class ReportDetailsScreen extends StatelessWidget {
   Widget _statusChip(String status) {
     final isPending = status == 'بانتظار الموافقة';
     final isInProgress = status == 'قيد العمل';
+    final isRejected = status == 'مرفوض';
     final background = isPending
         ? const Color(0xFFF8F0E2)
         : isInProgress
             ? AppColors.primaryLight
-            : const Color(0xFFEAF3EE);
+            : isRejected
+                ? const Color(0xFFFCEDEC)
+                : const Color(0xFFEAF3EE);
     final foreground = isPending
         ? AppColors.warning
         : isInProgress
             ? AppColors.primary
-            : AppColors.success;
+            : isRejected
+                ? AppColors.error
+                : AppColors.success;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
