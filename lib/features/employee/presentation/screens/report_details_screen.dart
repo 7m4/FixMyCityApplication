@@ -7,10 +7,12 @@ class ReportDetailsScreen extends StatelessWidget {
     super.key,
     required this.report,
     required this.onBack,
+    required this.onEditStatus,
   });
 
   final SampleReport report;
   final VoidCallback onBack;
+  final VoidCallback onEditStatus;
 
   void _showComingSoon(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -164,10 +166,7 @@ class ReportDetailsScreen extends StatelessWidget {
                 context,
                 'تعديل حالة البلاغ',
                 filled: true,
-                onPressed: () => _showComingSoon(
-                  context,
-                  'شاشة تحديث حالة البلاغ قيد التجهيز.',
-                ),
+                onPressed: onEditStatus,
               ),
               const SizedBox(height: 10),
               _actionButton(
