@@ -200,7 +200,7 @@ class ReportDetailsScreen extends StatelessWidget {
               const SizedBox(height: 10),
               _actionButton(
                 context,
-                'مراجعة البلاغات المتكررة - 2',
+                'مراجعة البلاغات المتكررة - ${report.possibleDuplicateIds.length}',
                 onPressed: onReviewDuplicates,
               ),
               const SizedBox(height: 16),
