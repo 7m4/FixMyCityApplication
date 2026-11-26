@@ -49,9 +49,9 @@ class SampleReport {
   final String title;
   final String location;
   final String date;
-  final String status;
+  String status;
 
-  const SampleReport({
+  SampleReport({
     required this.id,
     required this.title,
     required this.location,
@@ -63,9 +63,11 @@ class SampleReport {
 class ManagerDashboardScreen extends StatefulWidget {
   const ManagerDashboardScreen({
     super.key,
+    required this.reports,
     this.onReportTap,
   });
 
+  final List<SampleReport> reports;
   final ValueChanged<SampleReport>? onReportTap;
 
   @override
@@ -73,8 +75,7 @@ class ManagerDashboardScreen extends StatefulWidget {
       _ManagerDashboardScreenState();
 }
 
-class _ManagerDashboardScreenState
-    extends State<ManagerDashboardScreen> {
+class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
   String _selectedFilter = 'الكل';
 
   static const _filters = [
@@ -86,16 +87,16 @@ class _ManagerDashboardScreenState
 
   List<SampleReport> get _filteredReports {
     if (_selectedFilter == 'الكل') {
-      return DashboardSampleData.reports;
+      return widget.reports;
     }
 
     if (_selectedFilter == 'المنتهية') {
-      return DashboardSampleData.reports
+      return widget.reports
           .where((report) => report.status == 'تم الحل')
           .toList();
     }
 
-    return DashboardSampleData.reports
+    return widget.reports
         .where((report) => report.status == _selectedFilter)
         .toList();
   }
@@ -143,10 +144,7 @@ class _ManagerDashboardScreenState
   Widget _buildHeader() {
     return Container(
       color: AppColors.primary,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 18,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -187,10 +185,7 @@ class _ManagerDashboardScreenState
         const SizedBox(height: 4),
         Text(
           '${DashboardSampleData.departmentName} · ملخص بلاغات القسم',
-          style: const TextStyle(
-            color: AppColors.text,
-            fontSize: 13,
-          ),
+          style: const TextStyle(color: AppColors.text, fontSize: 13),
         ),
       ],
     );
@@ -216,9 +211,9 @@ class _ManagerDashboardScreenState
             ),
           ),
           const SizedBox(height: 4),
-          Text(
+          const Text(
             '${DashboardSampleData.totalReports}',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 38,
               fontWeight: FontWeight.bold,
@@ -256,10 +251,7 @@ class _ManagerDashboardScreenState
 
   Widget _buildSummaryItem(int count, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 10,
-        horizontal: 4,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(12),
@@ -277,10 +269,7 @@ class _ManagerDashboardScreenState
           Text(
             label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 10),
           ),
         ],
       ),
@@ -307,17 +296,12 @@ class _ManagerDashboardScreenState
       child: Row(
         children: _filters.map((filter) {
           final selected = _selectedFilter == filter;
-
           return Padding(
             padding: const EdgeInsets.only(left: 7),
             child: ChoiceChip(
               label: Text(filter),
               selected: selected,
-              onSelected: (_) {
-                setState(() {
-                  _selectedFilter = filter;
-                });
-              },
+              onSelected: (_) => setState(() => _selectedFilter = filter),
               selectedColor: AppColors.primary,
               backgroundColor: Colors.white,
               labelStyle: TextStyle(
@@ -344,10 +328,7 @@ class _ManagerDashboardScreenState
       children: [
         Text(
           '${DashboardSampleData.totalReports} بلاغاً',
-          style: const TextStyle(
-            color: AppColors.hint,
-            fontSize: 12,
-          ),
+          style: const TextStyle(color: AppColors.hint, fontSize: 12),
         ),
         const Text(
           'الأحدث أولاً',
@@ -366,54 +347,48 @@ class _ManagerDashboardScreenState
       borderRadius: BorderRadius.circular(18),
       onTap: () => widget.onReportTap?.call(report),
       child: Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  report.title,
-                  textAlign: TextAlign.right,
-                  style: const TextStyle(
-                    color: AppColors.navy,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    report.title,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                      color: AppColors.navy,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 7),
-                Text(
-                  report.id,
-                  textDirection: TextDirection.ltr,
-                  style: const TextStyle(
-                    color: AppColors.hint,
-                    fontSize: 12,
+                  const SizedBox(height: 7),
+                  Text(
+                    report.id,
+                    textDirection: TextDirection.ltr,
+                    style: const TextStyle(color: AppColors.hint, fontSize: 12),
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  '${report.location} · ${report.date}',
-                  textAlign: TextAlign.right,
-                  style: const TextStyle(
-                    color: AppColors.text,
-                    fontSize: 11,
+                  const SizedBox(height: 5),
+                  Text(
+                    '${report.location} · ${report.date}',
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(color: AppColors.text, fontSize: 11),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          _buildStatusChip(report.status),
-        ],
-      ),
+            const SizedBox(width: 10),
+            _buildStatusChip(report.status),
+          ],
+        ),
       ),
     );
   }
@@ -431,17 +406,22 @@ class _ManagerDashboardScreenState
         background = AppColors.primaryLight;
         foreground = AppColors.primary;
         break;
-      default:
+      case 'مرفوض':
+        background = const Color(0xFFFCEDEC);
+        foreground = AppColors.error;
+        break;
+      case 'تم الحل':
         background = const Color(0xFFEAF3EE);
         foreground = AppColors.success;
+        break;
+      default:
+        background = AppColors.primaryLight;
+        foreground = AppColors.primary;
     }
 
     return Container(
       constraints: const BoxConstraints(maxWidth: 115),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 7,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(10),
