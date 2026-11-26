@@ -1,52 +1,33 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
-import 'manager_dashboard_screen.dart';
+import '../../data/employee_reports_data.dart';
 
 class DuplicateReportsScreen extends StatelessWidget {
   const DuplicateReportsScreen({
     super.key,
+    required this.reports,
     required this.onReviewReport,
+    this.primaryReportId = 'FMC-2026-1042',
     this.onBack,
   });
 
+  final List<SampleReport> reports;
+  final String primaryReportId;
   final ValueChanged<SampleReport> onReviewReport;
   final VoidCallback? onBack;
 
-  static final _primaryReport = SampleReport(
-    id: 'FMC-2026-1042',
-    title: 'حفرة في الطريق الرئيسي',
-    location: 'شارع الملك عبدالله، الزرقاء',
-    date: '09/11/2026',
-    status: 'بانتظار الموافقة',
-  );
-
-  static final _possibleDuplicates = <_DuplicateCandidate>[
-    _DuplicateCandidate(
-      report: SampleReport(
-        id: 'FMC-2026-1046',
-        title: 'حفرة قرب دوار الجيش',
-        location: 'بالقرب من دوار الجيش، الزرقاء',
-        date: '10/11/2026',
-        status: 'قيد العمل',
-      ),
-      distance: '35 متر',
-      similarity: 'موقع قريب ووصف مشابه',
-    ),
-    _DuplicateCandidate(
-      report: SampleReport(
-        id: 'FMC-2026-1048',
-        title: 'تلف في الإسفلت',
-        location: 'شارع الملك عبدالله، الزرقاء',
-        date: '10/11/2026',
-        status: 'بانتظار الموافقة',
-      ),
-      distance: '60 متر',
-      similarity: 'موقع قريب ونوع مشكلة مشابه',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final primaryReport = reports.firstWhere(
+      (report) => report.id == primaryReportId,
+      orElse: () => reports.first,
+    );
+    final duplicateReports = primaryReport.possibleDuplicateIds
+        .map((id) => reports.where((report) => report.id == id))
+        .where((matches) => matches.isNotEmpty)
+        .map((matches) => matches.first)
+        .toList();
     return ListView(
       padding: EdgeInsets.zero,
       children: [
@@ -88,7 +69,7 @@ class DuplicateReportsScreen extends StatelessWidget {
               const SizedBox(height: 16),
               _sectionHeading('البلاغ الأساسي', Icons.assignment_outlined),
               const SizedBox(height: 10),
-              _primaryCard(),
+              _primaryCard(primaryReport),
               const SizedBox(height: 22),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,7 +92,7 @@ class DuplicateReportsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Text(
-                      '2 بلاغات',
+                      '${duplicateReports.length} بلاغات',
                       style: TextStyle(
                         color: AppColors.primary,
                         fontSize: 11,
@@ -122,7 +103,7 @@ class DuplicateReportsScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              ..._possibleDuplicates.map(_candidateCard),
+              ...duplicateReports.map((report) => _candidateCard(report)),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(13),
@@ -207,7 +188,7 @@ class DuplicateReportsScreen extends StatelessWidget {
     );
   }
 
-  Widget _primaryCard() {
+  Widget _primaryCard(SampleReport primaryReport) {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -221,7 +202,7 @@ class DuplicateReportsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _statusChip(_primaryReport.status),
+              _statusChip(primaryReport.status),
               const Text(
                 'البلاغ الأساسي',
                 style: TextStyle(color: AppColors.hint, fontSize: 11),
@@ -230,7 +211,7 @@ class DuplicateReportsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            _primaryReport.title,
+            primaryReport.title,
             textAlign: TextAlign.right,
             style: const TextStyle(
               color: AppColors.navy,
@@ -240,7 +221,7 @@ class DuplicateReportsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           Text(
-            _primaryReport.id,
+            primaryReport.id,
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.right,
             style: const TextStyle(
@@ -250,16 +231,15 @@ class DuplicateReportsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 7),
-          _infoRow(Icons.location_on_outlined, _primaryReport.location),
+          _infoRow(Icons.location_on_outlined, primaryReport.location),
           const SizedBox(height: 5),
-          _infoRow(Icons.calendar_today_outlined, _primaryReport.date),
+          _infoRow(Icons.calendar_today_outlined, primaryReport.date),
         ],
       ),
     );
   }
 
-  Widget _candidateCard(_DuplicateCandidate candidate) {
-    final report = candidate.report;
+  Widget _candidateCard(SampleReport report) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(15),
@@ -281,7 +261,7 @@ class DuplicateReportsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(9),
                 ),
                 child: Text(
-                  'يبعد ${candidate.distance}',
+                  report.duplicateDistance.isEmpty ? 'بلاغ مرتبط' : 'يبعد ${report.duplicateDistance}',
                   style: const TextStyle(
                     color: AppColors.primary,
                     fontSize: 10,
@@ -313,7 +293,7 @@ class DuplicateReportsScreen extends StatelessWidget {
           _infoRow(Icons.location_on_outlined, report.location),
           const SizedBox(height: 7),
           Text(
-            candidate.similarity,
+            report.duplicateSimilarity,
             textAlign: TextAlign.right,
             style: const TextStyle(color: AppColors.text, fontSize: 11),
           ),
@@ -389,16 +369,4 @@ class DuplicateReportsScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _DuplicateCandidate {
-  const _DuplicateCandidate({
-    required this.report,
-    required this.distance,
-    required this.similarity,
-  });
-
-  final SampleReport report;
-  final String distance;
-  final String similarity;
 }
