@@ -5,6 +5,7 @@ import 'department_reports_map_screen.dart';
 import 'report_details_screen.dart';
 import 'transfer_report_screen.dart';
 import 'update_report_status_screen.dart';
+import 'duplicate_reports_screen.dart';
 
 class EmployeeShell extends StatefulWidget {
   const EmployeeShell({super.key});
@@ -56,10 +57,14 @@ class _EmployeeShellState extends State<EmployeeShell> {
           });
         },
       ),
-      const _EmployeeTabPlaceholder(
-        title: 'المكررة',
-        message: 'ستظهر البلاغات المتكررة هنا.',
-        icon: Icons.copy_outlined,
+      DuplicateReportsScreen(
+        onReviewReport: (report) {
+          setState(() {
+            _selectedReport = report;
+            _isUpdatingStatus = false;
+            _isTransferringReport = false;
+          });
+        },
       ),
       const _EmployeeTabPlaceholder(
         title: 'حسابي',
