@@ -306,14 +306,14 @@ class _DepartmentReportsMapScreenState
                         IconButton(
                           visualDensity: VisualDensity.compact,
                           onPressed: () => setState(
-                            () => _zoom = (_zoom + .15).clamp(1, 1.6),
+                            () => _zoom = (_zoom + .15).clamp(1, 1.6).toDouble(),
                           ),
                           icon: const Icon(Icons.add, color: AppColors.navy),
                         ),
                         IconButton(
                           visualDensity: VisualDensity.compact,
                           onPressed: () => setState(
-                            () => _zoom = (_zoom - .15).clamp(1, 1.6),
+                            () => _zoom = (_zoom - .15).clamp(1, 1.6).toDouble(),
                           ),
                           icon: const Icon(Icons.remove, color: AppColors.navy),
                         ),
