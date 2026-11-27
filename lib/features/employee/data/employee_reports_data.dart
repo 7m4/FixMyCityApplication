@@ -1,0 +1,213 @@
+class SampleReport {
+  SampleReport({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.location,
+    required this.area,
+    required this.landmark,
+    required this.date,
+    required this.category,
+    required this.mapX,
+    required this.mapY,
+    required this.status,
+    this.department = 'مديرية الأشغال العامة',
+    this.possibleDuplicateIds = const [],
+    this.duplicateDistance = '',
+    this.duplicateSimilarity = '',
+    this.lastUpdated = '',
+    List<String>? actionHistory,
+  }) : actionHistory = actionHistory ?? [];
+
+  final String id;
+  final String title;
+  final String description;
+  final String location;
+  final String area;
+  final String landmark;
+  final String date;
+  final String category;
+  final double mapX;
+  final double mapY;
+  final List<String> possibleDuplicateIds;
+  final String duplicateDistance;
+  final String duplicateSimilarity;
+  String status;
+  String department;
+  String lastUpdated;
+  final List<String> actionHistory;
+}
+
+class EmployeeReportsData {
+  EmployeeReportsData._();
+
+  static final List<SampleReport> reports = [
+    SampleReport(
+      id: 'FMC-2026-1042',
+      title: 'حفرة في الطريق الرئيسي',
+      description: 'وجود حفرة وتلف في طبقة الإسفلت تعيق حركة المركبات.',
+      location: 'شارع الملك عبدالله، الزرقاء',
+      area: 'شارع الملك عبدالله',
+      landmark: 'بالقرب من دوار الجيش',
+      date: '09/11/2026',
+      category: 'أضرار الطرق والحفر',
+      mapX: .21,
+      mapY: .20,
+      status: 'بانتظار الموافقة',
+      possibleDuplicateIds: ['FMC-2026-1046', 'FMC-2026-1048'],
+      lastUpdated: '10 نوفمبر 2026 · 10:30 ص',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1039',
+      title: 'تلف في الرصيف',
+      description: 'وجود أجزاء متكسرة من الرصيف تعيق مرور المشاة.',
+      location: 'منطقة الوسط، الزرقاء',
+      area: 'منطقة الوسط',
+      landmark: 'بالقرب من السوق القديم',
+      date: '08/11/2026',
+      category: 'أضرار الأرصفة',
+      mapX: .64,
+      mapY: .20,
+      status: 'قيد العمل',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1035',
+      title: 'تضرر حاجز الطريق',
+      description: 'تضرر جزء من الحاجز المعدني على جانب الطريق.',
+      location: 'شارع الجيش، الزرقاء',
+      area: 'شارع الجيش',
+      landmark: 'بالقرب من دوار الجيش',
+      date: '07/11/2026',
+      category: 'سلامة الطرق',
+      mapX: .83,
+      mapY: .20,
+      status: 'قيد العمل',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1028',
+      title: 'هبوط في الطريق',
+      description: 'هبوط واضح في سطح الطريق يحتاج إلى إعادة تأهيل.',
+      location: 'حي الزهور، الزرقاء',
+      area: 'حي الزهور',
+      landmark: 'بالقرب من الحديقة العامة',
+      date: '05/11/2026',
+      category: 'أضرار الطرق والحفر',
+      mapX: .48,
+      mapY: .39,
+      status: 'تم الحل',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1046',
+      title: 'حفرة قرب دوار الجيش',
+      description: 'حفرة في الإسفلت بالقرب من تقاطع دوار الجيش.',
+      location: 'بالقرب من دوار الجيش، الزرقاء',
+      area: 'منطقة الوسط',
+      landmark: 'دوار الجيش',
+      date: '10/11/2026',
+      category: 'أضرار الطرق والحفر',
+      mapX: .53,
+      mapY: .53,
+      status: 'قيد العمل',
+      duplicateDistance: '35 متر',
+      duplicateSimilarity: 'موقع قريب ووصف مشابه',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1041',
+      title: 'عمود إنارة لا يعمل',
+      description: 'مصباح إنارة شارع لا يعمل خلال ساعات الليل.',
+      location: 'حي الزهور، الزرقاء',
+      area: 'حي الزهور',
+      landmark: 'بالقرب من المركز الصحي',
+      date: '06/11/2026',
+      category: 'الإنارة العامة',
+      mapX: .20,
+      mapY: .57,
+      status: 'قيد العمل',
+      department: 'قسم الإنارة',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1044',
+      title: 'تجمع مياه الأمطار',
+      description: 'تجمع مياه بعد هطول الأمطار بسبب انسداد التصريف.',
+      location: 'شارع الجيش، الزرقاء',
+      area: 'شارع الجيش',
+      landmark: 'بالقرب من المدرسة',
+      date: '09/11/2026',
+      category: 'تصريف مياه الأمطار',
+      mapX: .86,
+      mapY: .57,
+      status: 'بانتظار الموافقة',
+      department: 'قسم النظافة',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1031',
+      title: 'إصلاح بلاط الرصيف',
+      description: 'تمت إعادة تثبيت البلاط المتضرر على الرصيف.',
+      location: 'حي الزهور، الزرقاء',
+      area: 'حي الزهور',
+      landmark: 'بالقرب من الحديقة العامة',
+      date: '04/11/2026',
+      category: 'أضرار الأرصفة',
+      mapX: .34,
+      mapY: .76,
+      status: 'تم الحل',
+      department: 'إدارة الأرصفة',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1048',
+      title: 'تلف في الإسفلت',
+      description: 'تشققات وحفرة صغيرة في طبقة الإسفلت.',
+      location: 'شارع الملك عبدالله، الزرقاء',
+      area: 'شارع الجيش',
+      landmark: 'بالقرب من دوار الجيش',
+      date: '10/11/2026',
+      category: 'أضرار الطرق والحفر',
+      mapX: .77,
+      mapY: .76,
+      status: 'بانتظار الموافقة',
+      duplicateDistance: '60 متر',
+      duplicateSimilarity: 'موقع قريب ونوع مشكلة مشابه',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1025',
+      title: 'حاوية نفايات متضررة',
+      description: 'حاوية نفايات مكسورة وتحتاج إلى استبدال.',
+      location: 'منطقة الوسط، الزرقاء',
+      area: 'منطقة الوسط',
+      landmark: 'بالقرب من مبنى البلدية',
+      date: '03/11/2026',
+      category: 'النظافة العامة',
+      mapX: .16,
+      mapY: .88,
+      status: 'قيد العمل',
+      department: 'قسم النظافة',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1022',
+      title: 'إزالة مخلفات بناء',
+      description: 'وجود مخلفات بناء على جانب الطريق.',
+      location: 'شارع الملك عبدالله، الزرقاء',
+      area: 'شارع الملك عبدالله',
+      landmark: 'بالقرب من محطة الحافلات',
+      date: '02/11/2026',
+      category: 'النظافة العامة',
+      mapX: .48,
+      mapY: .91,
+      status: 'تم الحل',
+      department: 'قسم النظافة',
+    ),
+    SampleReport(
+      id: 'FMC-2026-1018',
+      title: 'غطاء منهل مكسور',
+      description: 'غطاء منهل مكسور ويشكل خطراً على المارة والمركبات.',
+      location: 'حي الزهور، الزرقاء',
+      area: 'حي الزهور',
+      landmark: 'بالقرب من المسجد',
+      date: '01/11/2026',
+      category: 'الصرف الصحي',
+      mapX: .84,
+      mapY: .90,
+      status: 'تم الحل',
+    ),
+  ];
+}
